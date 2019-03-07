@@ -54,36 +54,44 @@ describe('Laravel context for kahlan specs', function () {
     */
     context('It provides the same testing API as laravel TestCase', function () {
         it('crawls & asserts', function () {
-            $this->laravel->get('/')
-                          ->assertSee('Laravel')
-                          ->assertSee('Docs')
-                          ->assertSee('Laracast')
-                          ->assertSee('News')
-                          ->assertSee('Blog')
-                          ->assertSee('Nova')
-                          ->assertSee('Forge')
-                          ->assertSee('GitHub')
-                          ->assertSuccessful();
+            expect(function() {
+                $this->laravel->get('/')
+                              ->assertSee('Laravel')
+                              ->assertSee('Docs')
+                              ->assertSee('Laracast')
+                              ->assertSee('News')
+                              ->assertSee('Blog')
+                              ->assertSee('Nova')
+                              ->assertSee('Forge')
+                              ->assertSee('GitHub')
+                              ->assertSuccessful();
+            })->not->toThrow();
         });
 
         it('interacts with database', function () {
             factory(App\User::class)->create(['email' => 'test@email.com']);
-            $this->laravel->assertDatabaseHas('users', ['email' => 'test@email.com']);
+            expect(function() {
+                $this->laravel->assertDatabaseHas('users', ['email' => 'test@email.com']);
+            })->not->toThrow();
         });
 
         it('interacts with session', function () {
-            $this->laravel->withSession(['session_test' => 'working'])
-                          ->get('/session-test')
-                          ->assertSee('working')
-                          ->assertSessionHas('session_test','working');
+            expect(function() {
+                $this->laravel->withSession(['session_test' => 'working'])
+                              ->get('/session-test')
+                              ->assertSee('working')
+                              ->assertSessionHas('session_test','working');
+            })->not->toThrow();
         });
 
         it('interacts with app services', function () {
-            $this->laravel->expectsEvents('event_one', 'event_two')
-                          ->doesntExpectEvents('event_three');
+            expect(function() {
+                $this->laravel->expectsEvents('event_one', 'event_two')
+                              ->doesntExpectEvents('event_three');
 
-            event('event_one');
-            event('event_two');
+                event('event_one');
+                event('event_two');
+            })->not->toThrow();
         });
     });
 
